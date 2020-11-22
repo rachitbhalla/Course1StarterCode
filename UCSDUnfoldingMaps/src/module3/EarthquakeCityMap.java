@@ -24,8 +24,8 @@ import parsing.ParseFeed;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author [Rachit Bhalla](https://github.com/rachitbhalla)
+ * Date: November 22, 2020
  * */
 public class EarthquakeCityMap extends PApplet {
 
@@ -77,7 +77,10 @@ public class EarthquakeCityMap extends PApplet {
 	    // to create a new SimplePointMarker for each PointFeature in 
 	    // earthquakes.  Then add each new SimplePointMarker to the 
 	    // List markers (so that it will be added to the map in the line below)
-	    
+	    for (PointFeature pointFeature : earthquakes) {
+	    	SimplePointMarker simplePointMarker = createMarker(pointFeature);
+	    	markers.add(simplePointMarker);
+	    }
 	    
 	    // Add the markers to the map so that they are displayed
 	    map.addMarkers(markers);
@@ -108,6 +111,9 @@ public class EarthquakeCityMap extends PApplet {
 		// Here is an example of how to use Processing's color method to generate 
 	    // an int that represents the color yellow.  
 	    int yellow = color(255, 255, 0);
+	    
+	    int blue = color(0, 0, 255);
+	    int red = color(255, 0, 0);
 		
 		// TODO (Step 4): Add code below to style the marker's size and color 
 	    // according to the magnitude of the earthquake.  
@@ -116,7 +122,16 @@ public class EarthquakeCityMap extends PApplet {
 	    // Rather than comparing the magnitude to a number directly, compare 
 	    // the magnitude to these variables (and change their value in the code 
 	    // above if you want to change what you mean by "moderate" and "light")
-	    
+	    if (mag < 4.0f) {
+	    	marker.setColor(blue);
+	    	marker.setRadius(5);
+	    } else if (mag < 5.0f) {
+	    	marker.setColor(yellow);
+	    	marker.setRadius(10);
+	    } else {
+	    	marker.setColor(red);
+	    	marker.setRadius(15);
+	    }
 	    
 	    // Finally return the marker
 	    return marker;
@@ -134,6 +149,24 @@ public class EarthquakeCityMap extends PApplet {
 	private void addKey() 
 	{	
 		// Remember you can use Processing's graphics methods here
-	
+		fill(255, 255, 255);
+		rect(25, 50, 150, 500);
+		
+		fill(0, 0, 0);
+		textSize(15);
+		text("Earthquake Key", 45, 75); 
+		
+		fill(255, 0, 0);
+		ellipse(50, 125, 15, 15);
+		fill(255, 255, 0);
+		ellipse(50, 175, 10, 10);
+		fill(0, 0, 255);
+		ellipse(50, 225, 5, 5);
+
+		fill(0, 0, 0);
+		textSize(12);
+		text("5.0+ Magnitude", 75, 130); 
+		text("4.0+ Magnitude", 75, 180); 
+		text("Below 4.0", 75, 230); 
 	}
 }
