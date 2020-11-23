@@ -20,8 +20,8 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author [Rachit Bhalla](https://github.com/rachitbhalla)
+ * Date: November 23, 2020
  * */
 public class EarthquakeCityMap extends PApplet {
 	
@@ -170,7 +170,9 @@ public class EarthquakeCityMap extends PApplet {
 		// If isInCountry ever returns true, isLand should return true.
 		for (Marker m : countryMarkers) {
 			// TODO: Finish this method using the helper method isInCountry
-			
+			if(isInCountry(earthquake, m)) {
+				return true;
+			}
 		}
 		
 		
@@ -210,7 +212,27 @@ public class EarthquakeCityMap extends PApplet {
 		//  * If you know your Marker, m, is a LandQuakeMarker, then it has a "country" 
 		//      property set.  You can get the country with:
 		//        String country = (String)m.getProperty("country");
+
+		int oceanQuakeCounter = quakeMarkers.size();
 		
+		for (Marker cm : countryMarkers) { 
+			int landQuakeCounter = 0;
+			String name = (String)cm.getProperty("name");
+			for (Marker m : quakeMarkers) {
+				EarthquakeMarker em = (EarthquakeMarker)m;
+				if (em.isOnLand()) {
+					String country = (String)m.getProperty("country");
+					if (name.equals(country)) {
+						landQuakeCounter++;
+					}
+				} 
+			}
+			if (landQuakeCounter > 0) {
+				oceanQuakeCounter -= landQuakeCounter;
+				System.out.println(name + ": " + landQuakeCounter);
+			}
+		}
+		System.out.println("Ocean Quakes: " + oceanQuakeCounter);
 		
 	}
 	
