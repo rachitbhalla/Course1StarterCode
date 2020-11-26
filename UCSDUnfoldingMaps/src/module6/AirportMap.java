@@ -27,6 +27,9 @@ public class AirportMap extends PApplet {
 	private List<Marker> airportList;
 	List<Marker> routeList;
 	
+	private CommonMarker lastSelected;
+	private CommonMarker lastClicked;
+	
 	public void setup() {
 		// setting up PAppler
 		size(800,600, OPENGL);
@@ -51,6 +54,8 @@ public class AirportMap extends PApplet {
 			
 			// put airport in hashmap with OpenFlights unique id for key
 			airports.put(Integer.parseInt(feature.getId()), feature.getLocation());
+			
+			System.out.println(m.getProperties());
 		
 		}
 		
@@ -75,16 +80,102 @@ public class AirportMap extends PApplet {
 			System.out.println(sl.getProperties());
 			
 			//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-			//routeList.add(sl);
+			routeList.add(sl);
 		}
 		
 		
 		
 		//UNCOMMENT IF YOU WANT TO SEE ALL ROUTES
-		//map.addMarkers(routeList);
+		map.addMarkers(routeList);
 		
 		map.addMarkers(airportList);
 		
+	}
+	
+	/** Event handler that gets called automatically when the 
+	 * mouse moves.
+	 */
+	@Override
+	public void mouseMoved()
+	{
+		// clear the last selection
+		if (lastSelected != null) {
+			lastSelected.setSelected(false);
+			lastSelected = null;
+		
+		}
+		selectMarkerIfHover(airportList);
+	}
+	
+	// If there is a marker selected 
+	private void selectMarkerIfHover(List<Marker> markers) {
+		// Abort if there's already a marker selected
+		if (lastSelected != null) {
+			return;
+		}
+		
+		for (Marker m : markers) {
+			CommonMarker marker = (CommonMarker) m;
+			if (marker.isInside(map,  mouseX, mouseY)) {
+				lastSelected = marker;
+				marker.setSelected(true);
+				return;
+			}
+		}
+	}
+	
+	/** The event handler for mouse clicks
+	 * It will display an earthquake and its threat circle of cities
+	 * Or if a city is clicked, it will display all the earthquakes 
+	 * where the city is in the threat circle
+	 */
+	@Override
+	public void mouseClicked()
+	{
+		if (lastClicked != null) {
+			unhideMarkers();
+			lastClicked = null;
+		}
+		else if (lastClicked == null) 
+		{
+			checkAirportForClick();
+		}
+	}
+	
+	// Helper method that will check if a airport marker was clicked on
+	// and respond appropriately
+	private void checkAirportForClick() {
+		if (lastClicked != null) return;
+		// Loop over the airport markers to see if one of them is selected
+		for (Marker m : airportList) {
+			AirportMarker marker = (AirportMarker) m;
+			if (!marker.isHidden() && marker.isInside(map, mouseX, mouseY)) {
+				lastClicked = marker;
+				// Hide all the other airports
+				for (Marker mhide : airportList) {
+					if (mhide != lastClicked) {
+						mhide.setHidden(true);
+					}
+				}
+				for (Marker mhide : routeList) {
+					if (!mhide.isInside(map, mouseX, mouseY)) {
+						mhide.setHidden(true);
+					}
+				}
+				return;
+			}
+		}
+	}
+	
+	
+	// loop over and unhide all markers
+	private void unhideMarkers() {
+		for(Marker marker : airportList) {
+			marker.setHidden(false);
+		}
+		for(Marker marker : routeList) {
+			marker.setHidden(false);
+		}
 	}
 	
 	public void draw() {

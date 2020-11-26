@@ -21,8 +21,8 @@ import processing.core.PApplet;
 /** EarthquakeCityMap
  * An application with an interactive map displaying earthquake data.
  * Author: UC San Diego Intermediate Software Development MOOC team
- * @author Your name here
- * Date: July 17, 2015
+ * @author [Rachit Bhalla](https://github.com/rachitbhalla)
+ * Date: November 26, 2020
  * */
 public class EarthquakeCityMap extends PApplet {
 	
@@ -124,6 +124,7 @@ public class EarthquakeCityMap extends PApplet {
 	    map.addMarkers(quakeMarkers);
 	    map.addMarkers(cityMarkers);
 	    
+	    sortAndPrint(20);
 	    
 	}  // End setup
 	
@@ -139,6 +140,14 @@ public class EarthquakeCityMap extends PApplet {
 	// TODO: Add the method:
 	//   private void sortAndPrint(int numToPrint)
 	// and then call that method from setUp
+	private void sortAndPrint(int numToPrint) {
+		Object[] earthquakeMarkers = quakeMarkers.toArray();
+		Arrays.sort(earthquakeMarkers);
+		for (int i = 0; i < Math.min(numToPrint, earthquakeMarkers.length); i++) {
+			System.out.println(earthquakeMarkers[i]);
+		}
+	}
+	
 	
 	/** Event handler that gets called automatically when the 
 	 * mouse moves.
